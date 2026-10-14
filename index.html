@@ -584,9 +584,10 @@ function positionApproachPlanets(progress){
 function finishApproach(){
  approachState='complete';approachRAF=0;approachLastProgress=1;if(collisionFireTimer){clearTimeout(collisionFireTimer);collisionFireTimer=0;}
  const selected=selectedCollisionIds();
- /* Resolve the projectile war before the physical collision. The requested number of worlds are visibly destroyed first. */
- resolveVolleyOutcome(selected,'projectile');
- const outcome=window.tvaEngine?.lastOutcome||{},survivors=selected.filter(id=>!(outcome.destroyed||[]).includes(id));
+ /* Only resolve a pre-collision projectile war when actual shots were fired during this approach. With no shots, the incursion proceeds directly to physical collision and every colliding universe is terminated. */
+ const volleyCounts=window.tvaVolleyCounts||{},shotsFired=selected.some(id=>Number(volleyCounts[id]||0)>0);
+ if(shotsFired)resolveVolleyOutcome(selected,'projectile');
+ const outcome=shotsFired?(window.tvaEngine?.lastOutcome||{}):{},survivors=shotsFired?selected.filter(id=>!(outcome.destroyed||[]).includes(id)):[...selected];
  if(survivors.length===1){
   const survivor=survivors[0];
   battlefield.classList.remove('approaching','approach-outline','collision-flash','burst-active','impact-phase','colliding','terminated-simulation');
