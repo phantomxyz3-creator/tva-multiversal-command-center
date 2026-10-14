@@ -599,6 +599,7 @@ function finishApproach(){
  }
  /* More than one reality survived the exchange: only those remaining proceed into the collision. */
  window.tvaActiveCollisionIds=survivors;
+ const projectileLayerNode=document.getElementById('projectileLayer'),allUnits=[...battlefield.querySelectorAll('.planet-unit')];const survivorUnits=survivors.map(id=>allUnits.find(u=>{const label=u.querySelector('.planet-label')?.textContent||'';return label===id||label.startsWith(id+' //')})).filter(Boolean);survivorUnits.forEach(u=>battlefield.insertBefore(u,projectileLayerNode));
  positionApproachPlanets(1);
  battlefield.classList.remove('approaching','approach-outline','collision-flash','burst-active','impact-phase','colliding','terminated-simulation');
  const burst=document.getElementById('incursionBurst');
